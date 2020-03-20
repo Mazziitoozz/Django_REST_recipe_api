@@ -29,8 +29,8 @@ class PublicUserApiTests(TestCase):
 
         self.assertEqual(res.status_code,status.HTTP_201_CREATED) # compare the status
         user = get_user_model().objects.get(**res.data)
-        print(user)
-        print(user.check_password(payload['password']))
+        # print(user)
+        # print(user.check_password(payload['password']))
         self.assertTrue(user.check_password(payload['password']))
         self.assertNotIn ('password',res.data)
     
