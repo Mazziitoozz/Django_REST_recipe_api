@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Tag,Ingredient
+from core.models import Tag,Ingredient,Recipe
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -18,3 +18,42 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ('id', 'name')
         read_only_Fields = ('id',)
+
+class RecipeSerializer(serializers.ModelSerializer):
+    """ Serialize a recipe"""
+    'Ingredient and Tag are primary keys from other tables, we set many=True because is many to many'
+   
+    ingredients = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Ingredient.objects.all()
+    )
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all()
+    )
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id', 'title', 'ingredients', 'tags', 'time_minutes', 'price',
+            'link',
+        )
+        read_only_fields = ('id',)
+class RecipeDetailSerializer(RecipeSerializer):
+    """We reuse the code from the previous serializers, but we are going to overwrite some things"""
+    ingredients = IngredientSerializer(many=True,read_only=True)
+    tags = TagSerializer(many=True,read_only=True)
+    # create this structure
+        # {
+        #     "id": 1,
+        #     "title": "Vegan  key lime pie",
+        #     "ingredients": [
+        #         3
+        #     ],
+        #     "tags": [
+        #         8
+        #     ],
+        #     "time_minutes": 60,
+        #     "price": "15.00",
+        #     "link": ""
+        # }
