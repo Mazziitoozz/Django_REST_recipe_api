@@ -3,6 +3,16 @@ from django.contrib.auth.models  import AbstractBaseUser,BaseUserManager,\
                                         PermissionsMixin
 from django.conf import settings
 
+import uuid
+import os
+
+def recipe_image_file_path(instance, filename):
+    """Generate file path for new recipe image"""
+    ext = filename.split('.')[-1]   # extension
+    filename = f'{uuid.uuid4()}.{ext}'
+
+    return os.path.join('uploads/recipe/', filename)
+
 class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
@@ -68,6 +78,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField('Ingredient')
     tags = models.ManyToManyField('Tag')  # If we don´t use the quotes we must be sure that the class is above to the current class
                                                         # However if you decided to use the quotes you dont need to worry about it
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
 
     def __str__(self):
         return self.title

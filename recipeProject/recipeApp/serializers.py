@@ -57,3 +57,13 @@ class RecipeDetailSerializer(RecipeSerializer):
         #     "price": "15.00",
         #     "link": ""
         # }
+
+class RecipeImageSerializer(serializers.ModelSerializer):
+    """Serializer for uploading images to recipe"""
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'image')
+        read_only_fields = ('id',)
+
+ 
